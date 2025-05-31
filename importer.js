@@ -1,4 +1,4 @@
-[pixelCopyImage, pixelCopyFrames, pixelCopyImages] = await (async () => {
+	[pixelCopyImage, pixelCopyFrames, pixelCopyImages] = await (async () => {
 // Libraries and requirements
 	// Getting Quantization Algorithm
 	if (typeof MMCQ === 'undefined') {
@@ -19,8 +19,15 @@
 	// Getting Deobf
 	function start() {
 		ig.game.alertDialog.prompt = Deobfuscator.function(ig.game.alertDialog, "if(!this.isOpen)")
-		ig.game.painter.rotatePixels = Deobfuscator.function(ig.game.painter, "rotate");
-	}
+		ig.game.painter.rotatePixels = function(pixels2D) {
+                var matrix = this.O6127(pixels2D);
+  		  for (var i = 0; i < this.directionMax - 1; i++) {
+  	      matrix = this.O4571(matrix);
+		    }
+
+	    return matrix;
+		};
+}
 	(async () => {
 		if (typeof Deobfuscator === 'undefined') 
 			await $.getScript("https://cdn.jsdelivr.net/gh/parseml/many-deobf@latest/deobf.js");
