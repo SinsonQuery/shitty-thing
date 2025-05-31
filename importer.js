@@ -229,27 +229,33 @@ function frame(fmode, img, framew, frameh, frames) {
 }
 
 function write(canv, palette) {
-	// convenience variables
-	let p = ig.game.painter;
-	let pd = p.data;
+    let p = ig.game.painter;
+    let pd = p.data;
 
-	// write in canvas and palette
-	pd.pixels = canv;
-	pd.colors = palette;
-	for (let i = palette.length; i < 56; i++) {
-		pd.colors[i] = {r: 255, g: 255, b: 255, alpha: 1};
-	}
-	pd.colors[11] = {r: 0, g: 0, b: 0, alpha: 0};
+    pd.pixels = canv;
+    pd.colors = palette;
+    for (let i = palette.length; i < 56; i++) {
+        pd.colors[i] = { r:255, g:255, b:255, alpha:1 };
+    }
+    pd.colors[11] = { r:0, g:0, b:0, alpha:0 };
 
-	// Why do we need to rotate and flip everything? I don't know! Blame Zoltar!
-	p.flip = Deobfuscator.function(p, "this.tileWidth-c-1]"); // I have no idea what this does.
-	for (let frame = 0; frame < ig.game.painter.data.pixels.length; frame++) {
-		pd.pixels[frame] = p.rotatePixels(pd.pixels[frame]);
-		pd.pixels[frame] = p.flip(pd.pixels[frame]);
-	}
-	ig.game.painter.update();
+    p.flip = function(pixels2D) {
+        let b = this.O6127(pixels2D);
+        for (let c = 0; c < this.tileWidth; c++) {
+            for (let d = 0; d < this.O336; d++) {
+                b[c][d] = pixels2D[this.tileWidth - c - 1][d];
+            }
+        }
+        return b;
+    };
+
+    for (let frame = 0; frame < p.data.pixels.length; frame++) {
+        pd.pixels[frame] = p.rotatePixels(pd.pixels[frame]);
+        pd.pixels[frame] = p.flip(pd.pixels[frame]);
+    }
+
+    ig.game.painter.update();
 }
-
 function validatefmode(fmode) {
 	// default and variant arguments for fmode
 	// sorry in advance
